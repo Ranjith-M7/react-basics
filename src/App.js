@@ -1,31 +1,14 @@
 import React from "react";
-import { useState, useEffect } from "react";
-
+import useFetch from "./useFetch";
 function App() {
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    async function getData() {
-      const response = await fetch(
-        `https://jsonplaceholder.typicode.com/posts/`
-      );
-
-      const data = await response.json();
-      
-      if (data && data.length) setData(data);
-    }
-
-    getData();
-  }, []);
+  const [data, error] = useFetch("https://jsonplaceholder.typicode.com/todos");
 
   return (
     <>
-      <ul>
-        {data.map((list) => (
-          <li key={Math.random()}>{list.title}</li>
-        ))}
-      </ul>
+    <h1>{error}</h1>
+      <ul>{data && data.map((list) => <li key={list.id}>{list.title}</li>)}</ul>
     </>
   );
 }
 export default App;
+
