@@ -1,44 +1,31 @@
 import React from "react";
-import { useReducer } from "react";
+import { useState, useEffect } from "react";
 
 function App() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    async function getData() {
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/posts/`
+      );
+
+      const data = await response.json();
+      
+      if (data && data.length) setData(data);
+    }
+
+    getData();
+  }, []);
+
   return (
     <>
-      <h1>{state.count}</h1>
-      <button onClick={() => dispatch({ type: "increment" })}>+</button>
-      <button onClick={() => dispatch({ type: "decrement" })}>-</button>
-      <button onClick={() => dispatch({ type: "reset" })}>Reset</button>
+      <ul>
+        {data.map((list) => (
+          <li key={Math.random()}>{list.title}</li>
+        ))}
+      </ul>
     </>
   );
 }
 export default App;
-
-const initialState = { count: 0 };
-const reducer = (state, action) => {
-  switch (action.type) {
-    case "increment": {
-      return {
-        ...state,
-        count: state.count + 1,
-      };
-    }
-    case "decrement": {
-      return {
-        ...state,
-        count: state.count - 1,
-      };
-    }
-    case "reset": {
-      return {
-        ...state,
-        count: 0,
-      };
-    }
-    default: {
-      return {
-        state,
-      };
-    }
-  }
-};
